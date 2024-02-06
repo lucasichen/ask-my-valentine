@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const app = express();
 app.use(express.json());
 require('dotenv').config();
@@ -30,11 +31,40 @@ admin.initializeApp({
 // Set up Firestore
 const db = admin.firestore();
 
+// Set up multer for handling file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 // Start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+
+app.post('/save', upload.single('gif'), async (req, res) => {
+  try {
+    const name = req.body.name
+    const gifData = req.file.buffer; 
+    const base64Gif = gifData.toString('base64');
+    let obj = {};
+    obj["name"] = name;
+    obj["gif"] = base64Gif;
+
+    const dataRef = await db.collection('valentines').add(obj);
+    console.log(gifData);
+
+    res.status(201).json({ message: 'new link is' + dataRef.id,
+    ID: dataRef.id,
+    data: base64Gif});
+  } catch (error) {
+    console.error('Error saving data to Database:', error);
+    res.status(500).send('Internal Server Error');
+  }
+})
 
 // Export the Express API
 module.exports = app;
