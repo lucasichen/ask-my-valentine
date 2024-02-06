@@ -1,12 +1,17 @@
-import './App.css';
-import WillYouBeMine from './pages/willYouBeMine';
-import { Box } from '@mui/material';
+// App.js or where you define your routes
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MyValentine from './pages/MyValentine';
+import { WillYouBeMine } from './components/WillYouBeMine';
 
-function App() {
+const App = () => {
   return (
-    <Box className="App">
-      <WillYouBeMine />
-    </Box>
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<MyValentine />} />
+        <Route exact path="/will-you-be-my-valetine" element={<WillYouBeMine />} />
+      </Routes>
+    </Router>
   );
 }
 

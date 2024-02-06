@@ -5,14 +5,13 @@ export const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "90vh",
+    height: "80vh",
   },
   buttonContainer: {
     justifyContent: "center",
     marginTop: "20px",
   },
-  yesButton: {
-    backgroundColor: "#4CBB17",
+  createButton: {
     marginRight: "10px",
-  }
+  },
 }
