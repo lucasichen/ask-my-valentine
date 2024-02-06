@@ -1,0 +1,1 @@
+export const baseGif = ["https://gifdb.com/images/high/bear-love-bouncing-mocha-with-flowers-n4m0fyne6h4e6y2x.gif", "https://media1.tenor.com/m/YNw9-lYQqMEAAAAC/bear-cute-kiss.gif"];
