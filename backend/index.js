@@ -35,17 +35,7 @@ const db = admin.firestore();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).array('gifs', 2);
 
-// Start the server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
-
-app.post('/save', async (req, res) => {
+app.post('/api/save', async (req, res) => {
   upload(req, res, async (err) => {
     if (err instanceof multer.MulterError) {
       // Handle multer errors
@@ -75,6 +65,39 @@ app.post('/save', async (req, res) => {
     ID: dataRef.id});
   })
 })
+
+app.get('/api/getGifs/:docID', async(req, res) => {
+  const documentId = req.params.docID;
+
+  // Retrieve document from Firestore
+  const documentSnapshot = await db.collection('valentines').doc(documentId).get();
+
+  if (!documentSnapshot.exists) {
+    return res.status(404).json({ error: 'Document not found' });
+  }
+
+  // Extract base64 GIF data from the document
+  const base64Gif1 = documentSnapshot.data().gif;
+  const base64Gif2 = documentSnapshot.data().end_gif;
+
+  // Convert base64 data to binary buffers
+  const gifBuffer1 = Buffer.from(base64Gif1, 'base64');
+  const gifBuffer2 = Buffer.from(base64Gif2, 'base64');
+
+  // Set the response content type to "application/json"
+  res.contentType('application/json');
+
+  res.json({
+    gif1: gifBuffer1,
+    gif2: gifBuffer2,
+  });
+})
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
 
 // Export the Express API
 module.exports = app;
