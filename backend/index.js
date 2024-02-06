@@ -33,7 +33,7 @@ const db = admin.firestore();
 
 // Set up multer for handling file uploads
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }).array('gifs', 2);
 
 // Start the server
 const port = process.env.PORT || 3000;
@@ -45,25 +45,35 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-app.post('/save', upload.single('gif'), async (req, res) => {
-  try {
-    const name = req.body.name
-    const gifData = req.file.buffer; 
-    const base64Gif = gifData.toString('base64');
+app.post('/save', async (req, res) => {
+  upload(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      // Handle multer errors
+      console.error('Multer Error:', err.message);
+      return res.status(400).json({ error: 'File upload error' });
+    } else if (err) {
+      // Handle other errors
+      console.error('Error:', err.message);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    // Get binary data for each GIF
+    const gifData1 = req.files[0].buffer;
+    const gifData2 = req.files[1].buffer;
+
+    // Convert binary GIF data to base64
+    const base64Gif1 = gifData1.toString('base64');
+    const base64Gif2 = gifData2.toString('base64');
+
     let obj = {};
-    obj["name"] = name;
-    obj["gif"] = base64Gif;
+    obj["name"] = "name";
+    obj["gif"] = base64Gif1;
+    obj["end_gif"] = base64Gif2;
 
     const dataRef = await db.collection('valentines').add(obj);
-    console.log(gifData);
-
-    res.status(201).json({ message: 'new link is' + dataRef.id,
-    ID: dataRef.id,
-    data: base64Gif});
-  } catch (error) {
-    console.error('Error saving data to Database:', error);
-    res.status(500).send('Internal Server Error');
-  }
+    res.status(201).json({ message: 'new link is ' + dataRef.id,
+    ID: dataRef.id});
+  })
 })
 
 // Export the Express API
