@@ -1,14 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Typography, Box, Button } from '@mui/material'
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { baseGif } from '../../constants';
 import { styles } from './askMyValentine.style';
 
-const CreateMyOwn = ({ handleCreatePressed, handleTemplatePressed }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.up('sm'));
-
+const AskMyValentine = ({ handleCreatePressed, handleTemplatePressed }) => {
   return (
     <Box style={styles.container}>
       <img height="300vh" src={baseGif[0]} alt="Will you be my Valentine?" />
@@ -22,4 +17,4 @@ const CreateMyOwn = ({ handleCreatePressed, handleTemplatePressed }) => {
   )
 }
 
-export default CreateMyOwn
+export default AskMyValentine
