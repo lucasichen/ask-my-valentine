@@ -37,6 +37,14 @@ const upload = multer({ storage: storage }).array('gifs', 2);
 
 app.post('/api/save', async (req, res) => {
   upload(req, res, async (err) => {
+    if (req.files.length !== 2) {
+      return res.status(400).json({ error: 'Please upload 2 GIFs' });
+    }
+
+    if (!req.body.name) {
+      return res.status(400).json({ error: 'Please provide a name' });
+    }
+
     if (err instanceof multer.MulterError) {
       // Handle multer errors
       console.error('Multer Error:', err.message);
@@ -55,18 +63,22 @@ app.post('/api/save', async (req, res) => {
     const base64Gif1 = gifData1.toString('base64');
     const base64Gif2 = gifData2.toString('base64');
 
+    const name = req.body.name;
+
     let obj = {};
-    obj["name"] = "name";
+    obj["name"] = name;
     obj["gif"] = base64Gif1;
     obj["end_gif"] = base64Gif2;
 
     const dataRef = await db.collection('valentines').add(obj);
-    res.status(201).json({ message: 'new link is ' + dataRef.id,
-    ID: dataRef.id});
+    res.status(201).json({
+      message: 'new link is ' + dataRef.id,
+      ID: dataRef.id
+    });
   })
 })
 
-app.get('/api/getGifs/:docID', async(req, res) => {
+app.get('/api/get-valentine/:docID', async (req, res) => {
   const documentId = req.params.docID;
 
   // Retrieve document from Firestore
@@ -77,8 +89,9 @@ app.get('/api/getGifs/:docID', async(req, res) => {
   }
 
   // Extract base64 GIF data from the document
-  const base64Gif1 = documentSnapshot.data().gif;
-  const base64Gif2 = documentSnapshot.data().end_gif;
+  const name = documentSnapshot.data()?.name;
+  const base64Gif1 = documentSnapshot.data()?.gif;
+  const base64Gif2 = documentSnapshot.data()?.end_gif;
 
   // Convert base64 data to binary buffers
   const gifBuffer1 = Buffer.from(base64Gif1, 'base64');
@@ -88,6 +101,7 @@ app.get('/api/getGifs/:docID', async(req, res) => {
   res.contentType('application/json');
 
   res.json({
+    name: name,
     gif1: gifBuffer1,
     gif2: gifBuffer2,
   });
