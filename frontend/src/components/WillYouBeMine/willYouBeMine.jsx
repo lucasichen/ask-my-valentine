@@ -36,7 +36,7 @@ const WillYouBeMine = ({ name, gif1, endGif }) => {
       {
         isYesPressed ? (
           <Box className="mine-now" sx={styles.container}>
-            <Typography align="center" variant="h3">I see on Valentine's day!</Typography>
+            <Typography align="center" variant="h3">I'll see you on Valentine's day!</Typography>
             <Box component="img" sx={{ width: 300 }} src={endGif || baseGif[1]} alt="I see on Valentine's day!" />
           </Box >
         ) : (
