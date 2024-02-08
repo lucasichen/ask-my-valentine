@@ -13,7 +13,7 @@ const admin = require('firebase-admin');
 const serviceAccount = {
   "type": "service_account",
   "project_id": process.env.FIREBASE_PROJECT_ID,
-  "private_key_id": process.env.FIREBASE_PRIVATE_KEY_ID.replace(/\\n/gm, "\n"),
+  "private_key_id": process.env.FIREBASE_PRIVATE_KEY_ID.replace(/\\n/g, '\n'),
   "private_key": process.env.FIREBASE_PRIVATE_KEY,
   "client_email": process.env.FIREBASE_CLIENT_EMAIL,
   "client_id": process.env.FIREBASE_CLIENT_ID,
@@ -37,6 +37,7 @@ const upload = multer({ storage: storage }).array('gifs', 2);
 
 app.post('/api/save', async (req, res) => {
   upload(req, res, async (err) => {
+    console.log("Initizating upload")
     if (req.files.length !== 2) {
       return res.status(400).json({ error: 'Please upload 2 GIFs' });
     }
@@ -71,6 +72,7 @@ app.post('/api/save', async (req, res) => {
     obj["end_gif"] = base64Gif2;
 
     const dataRef = await db.collection('valentines').add(obj);
+    console.log("Save sucessful sending response")
     res.status(201).json({
       message: 'new link is ' + dataRef.id,
       ID: dataRef.id
@@ -79,6 +81,11 @@ app.post('/api/save', async (req, res) => {
 })
 
 app.get('/api/get-valentine/:docID', async (req, res) => {
+  console.log("Initizating get-valentine from" + req.params.docID)
+  if (!req.params.docID) {
+    return res.status(400).json({ error: 'Please provide a document ID' });
+  }
+
   const documentId = req.params.docID;
 
   // Retrieve document from Firestore
@@ -96,7 +103,7 @@ app.get('/api/get-valentine/:docID', async (req, res) => {
   // Convert base64 data to binary buffers
   const gifBuffer1 = Buffer.from(base64Gif1, 'base64');
   const gifBuffer2 = Buffer.from(base64Gif2, 'base64');
-
+  console.log("Sending response")
   // Set the response content type to "application/json"
   res.contentType('application/json');
 
