@@ -10,8 +10,8 @@ const AskMyValentine = ({ handleCreatePressed, handleTemplatePressed }) => {
       <Typography variant="h3">Welcome to Ask My Valentine 💘</Typography>
       <Typography variant="h5">Create your own valentine message</Typography>
       <Box style={styles.buttonContainer}>
-        <Button variant="contained" color="primary" style={styles.createButton} onClick={handleCreatePressed}>Create My Own</Button>
-        <Button variant="contained" color="success" onClick={handleTemplatePressed}>Use ours</Button>
+        <Button variant="contained" color="primary" style={styles.createButton} onClick={handleCreatePressed}>Create Your Own</Button>
+        <Button variant="contained" color="success" onClick={handleTemplatePressed}>Use mine</Button>
       </Box>
     </Box >
   )

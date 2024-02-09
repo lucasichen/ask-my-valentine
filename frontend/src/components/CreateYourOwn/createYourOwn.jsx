@@ -60,13 +60,13 @@ const CreateYourOwn = () => {
             // baseGif={baseGif[0]}
             />
             {/* Text field */}
-            <TextField
+            {/* <TextField
               id="message"
               label="Your Message"
               variant="outlined"
               margin="normal"
               onChange={(e) => handleTextFieldChange(e.target.value)}
-            />
+            /> */}
 
             <Typography align="center" variant="h3">Will you be my Valentine?</Typography>
             <Box
