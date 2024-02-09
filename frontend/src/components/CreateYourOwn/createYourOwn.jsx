@@ -6,57 +6,26 @@ import { baseGif } from '../../constants';
 import { styles } from './createYourOwn.style';
 import { useNavigate } from 'react-router-dom';
 import ImageUpload from './components/imageUpload';
+import { useValentine } from '../../hooks/useValentine';
 
 const CreateYourOwn = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = !(useMediaQuery(theme.breakpoints.up('sm')));
-  const [imageStart, setImageStart] = useState(null); // State to hold the uploaded image
-  const [imageEnd, setImageEnd] = useState(null); // State to hold the uploaded image
-  const [openModalStart, setOpenModalStart] = useState(false); // State to control the modal
-  const [openModalEnd, setOpenModalEnd] = useState(false); // State to control the modal
-  const [selectedStartDefaultGif, setselectedStartDefaultGif] = useState(null); // State to hold the selected default gif
-  const [selectedEndDefaultGif, setselectedEndDefaultGif] = useState(null); // State to hold the selected default gif
-  const [textFieldValue, setTextFieldValue] = useState(''); // State to hold the text field value
-
-  // Function to handle image upload
-  const handleImageUploadStart = (e) => {
-    const file = e.target.files[0];
-    setselectedStartDefaultGif(null); // Reset the selected default gif
-    setImageStart(file);
-    setOpenModalStart(false); // Close the modal after image upload
-  }
-
-  // Function to handle selection of default gif
-  const handleSelectDefaultGifStart = (gif) => {
-    setImageStart(null); // Reset the image state
-    setselectedStartDefaultGif(gif);
-    setOpenModalStart(false); // Close the modal after selecting the default gif
-  }
-
-  const handleImageUploadEnd = (e) => {
-    const file = e.target.files[0];
-    setselectedEndDefaultGif(null); // Reset the selected default gif
-    setImageEnd(file);
-    setOpenModalEnd(false); // Close the modal after image upload
-  }
-
-  const handleSelectDefaultGifEnd = (gif) => {
-    setImageStart(null); // Reset the image state
-    setselectedEndDefaultGif(gif);
-    setOpenModalEnd(false); // Close the modal after selecting the default gif
-  }
-
-  // Function to handle text field value
-  const handleTextFieldChange = (value) => {
-    setTextFieldValue(value);
-  }
-
-  const handleCreatePressed = () => {
-    console.log(textFieldValue, imageStart, imageEnd, selectedStartDefaultGif, selectedEndDefaultGif);
-  }
-
-  const isCreateDisabled = (imageStart == null & selectedStartDefaultGif == null) | (imageEnd == null & selectedEndDefaultGif == null);
+  const {
+    loading,
+    imageStart,
+    imageEnd,
+    openModalStart,
+    openModalEnd,
+    isCreateDisabled,
+    handleImageUploadStart,
+    handleImageUploadEnd,
+    handleTextFieldChange,
+    handleCreatePressed,
+    setOpenModalStart,
+    setOpenModalEnd,
+  } = useValentine();
 
   return (
     <Box style={styles.container}>
@@ -80,15 +49,15 @@ const CreateYourOwn = () => {
           <Box sx={styles.subContainer} className="will-you-be-my-valentine">
             {/* Image upload */}
             {imageStart && <img height="300vh" src={URL.createObjectURL(imageStart)} alt="Will you be my Valentine?" />}
-            {selectedStartDefaultGif && <img height="300vh" src={selectedStartDefaultGif} alt="Will you be my Valentine?" />}
+            {/* {selectedStartDefaultGif && <img height="300vh" src={selectedStartDefaultGif} alt="Will you be my Valentine?" />} */}
             <Button variant="contained" onClick={() => setOpenModalStart(true)}>Upload Image</Button>
             <ImageUpload
               openModal={openModalStart}
               setOpenModal={setOpenModalStart}
               handleImageUpload={handleImageUploadStart}
-              handleSelectDefaultGif={handleSelectDefaultGifStart}
+              // handleSelectDefaultGif={handleSelectDefaultGifStart}
               isMobile={isMobile}
-              baseGif={baseGif[0]}
+            // baseGif={baseGif[0]}
             />
             {/* Text field */}
             <TextField
@@ -126,28 +95,32 @@ const CreateYourOwn = () => {
             <Typography align="center" variant="h3">See you on Valentine's day!</Typography>
             {/* <Box component="img" sx={{ width: 300 }} src={baseGif[1]} alt="I see on Valentine's day!" /> */}
             {imageEnd && <img height="300vh" src={URL.createObjectURL(imageEnd)} alt="Will you be my Valentine?" />}
-            {selectedEndDefaultGif && <img height="300vh" src={selectedEndDefaultGif} alt="Will you be my Valentine?" />}
+            {/* {selectedEndDefaultGif && <img height="300vh" src={selectedEndDefaultGif} alt="Will you be my Valentine?" />} */}
             <Button variant="contained" onClick={() => setOpenModalEnd(true)}>Upload Image</Button>
             <ImageUpload
               openModal={openModalEnd}
               setOpenModal={setOpenModalEnd}
               handleImageUpload={handleImageUploadEnd}
-              handleSelectDefaultGif={handleSelectDefaultGifEnd}
+              // handleSelectDefaultGif={handleSelectDefaultGifEnd}
               isMobile={isMobile}
-              baseGif={baseGif[1]}
+            // baseGif={baseGif[1]}
             />
           </Box >
         </Grid>
         <Grid item xs={12} style={styles.createContainer}>
           <Box >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleCreatePressed()}
-              disabled={isCreateDisabled}
-              fullWidth
-            >Create
-            </Button>
+            {loading ? (
+              <Box>Loading...</Box>
+            ) :
+              (<Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleCreatePressed()}
+                disabled={isCreateDisabled}
+                fullWidth
+              >Create
+              </Button>)
+            }
           </Box>
         </Grid>
       </Grid >
