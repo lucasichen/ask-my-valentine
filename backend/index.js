@@ -95,14 +95,17 @@ app.get('/api/get-valentine/:folderName', async (req, res) => {
     console.log('Retrieving files from folder:', folderName);
     const [files] = await bucket.getFiles({ prefix: folderName + '/' });
     console.log('Successfully retrieved files');
-    const gifs = []
+    let gifs = []
     const fileData = await Promise.all(files.map(async file => {
       const [fileData] = await file.download();
       const base64Data = fileData.toString('base64');
       gifs.push(base64Data);
     }));
     console.log('Returning file data');
-    res.json({ gif1: gifs[0], gif2: gifs[1] });
+    gifs = gifs.filter(function(value) {
+      return value !== "";
+    });
+    res.json({ gif1: gifs[1], gif2: gifs[0] });
   } catch (error) {
     console.error('Error retrieving files:', error);
     res.status(500).send('Error retrieving files.');
